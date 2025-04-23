@@ -1,24 +1,21 @@
 #!/bin/bash
 
-# USAGE:
+# USAGE
 # ./create_rulesets.sh <target-repo-name>
 
-# Validate input
+TARGET_REPO="sai-venkata-emmidesetty/$1"
+
 if [[ -z "$1" ]]; then
   echo "Usage: $0 <target-repo-name>"
   exit 1
 fi
 
-# Set the full target repository path
-TARGET_REPO="venkata-sai-emmidesetty/$1"
-
-# Function to create a ruleset for a specific branch
 create_ruleset() {
   local RULESET_NAME="$1"
   local TARGET_BRANCH="$2"
   local APPROVERS="$3"
 
-  RULESET_PAYLOAD=$(cat <<EOF
+  RULESET_PAYLOAD=$(cat << EOF
 {
   "name": "$RULESET_NAME",
   "enforcement": "active",
@@ -81,19 +78,18 @@ create_ruleset() {
 EOF
 )
 
-  # Send ruleset to GitHub API
-  RESPONSE=$(gh api repos/"$TARGET_REPO"/rulesets \
+  # Send the ruleset payload to GitHub API
+  RESPONSE=$(gh api repos/$TARGET_REPO/rulesets \
     --method POST \
     --header "Accept: application/vnd.github+json" \
-    --input <(echo "$RULESET_PAYLOAD") 2>&1)
+    --input - <<< "$RULESET_PAYLOAD" 2>&1)
 
-  # Check if the API call was successful
   if [[ $? -ne 0 ]]; then
-    echo "❌ Failed to apply ruleset '$RULESET_NAME' to branch '$TARGET_BRANCH'."
+    echo "Failed to apply ruleset '$RULESET_NAME' to branch '$TARGET_BRANCH'."
     echo "Error: $RESPONSE"
     exit 1
   else
-    echo "✅ Ruleset '$RULESET_NAME' applied successfully to branch '$TARGET_BRANCH' in repo '$TARGET_REPO'"
+    echo "Ruleset '$RULESET_NAME' applied successfully to branch '$TARGET_BRANCH' in repo '$TARGET_REPO'"
   fi
 }
 
@@ -101,3 +97,6 @@ EOF
 create_ruleset "dev" "dev" 1
 create_ruleset "qa" "qa" 2
 create_ruleset "prod" "prod" 2
+
+#chmod +x create_rulesets.sh
+#./create_rulesets.sh new-repository-name
