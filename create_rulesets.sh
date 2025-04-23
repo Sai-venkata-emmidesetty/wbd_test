@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# USAGE
+# USAGE:
 # ./create_rulesets.sh <target-repo-name>
 
 TARGET_REPO="Sai-venkata-emmidesetty/$1"
@@ -31,7 +31,7 @@ create_ruleset() {
       "parameters": {
         "required_approving_review_count": $APPROVERS,
         "dismiss_stale_reviews_on_push": true,
-        "require_code_owner_review": true,
+        "require_code_owner_review": false,
         "require_last_push_approval": false,
         "require_conversation_resolution": true
       }
@@ -40,26 +40,6 @@ create_ruleset() {
       "type": "required_linear_history",
       "parameters": {
         "enabled": true
-      }
-    },
-    {
-      "type": "required_signatures",
-      "parameters": {
-        "enabled": true
-      }
-    },
-    {
-      "type": "force_push",
-      "parameters": {
-        "enabled": false
-      }
-    },
-    {
-      "type": "allowed_merge_strategies",
-      "parameters": {
-        "merge": true,
-        "squash": true,
-        "rebase": true
       }
     }
   ],
