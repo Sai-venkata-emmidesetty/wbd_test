@@ -3,7 +3,7 @@
 # USAGE
 # ./create_rulesets.sh <target-repo-name>
 
-TARGET_REPO="sai-venkata-emmidesetty/$1"
+TARGET_REPO="Sai-venkata-emmidesetty/$1"
 
 if [[ -z "$1" ]]; then
   echo "Usage: $0 <target-repo-name>"
@@ -26,59 +26,94 @@ create_ruleset() {
       "exclude": []
     }
   },
-  "rules": {
-    "required_pull_request_reviews": {
-      "required_approving_review_count": $APPROVERS,
-      "dismiss_stale_reviews_on_push": true,
-      "require_code_owner_review": true,
-      "require_last_push_approval": false,
-      "require_conversation_resolution": true
+  "rules": [
+    {
+      "type": "required_pull_request_reviews",
+      "parameters": {
+        "required_approving_review_count": $APPROVERS,
+        "dismiss_stale_reviews_on_push": true,
+        "require_code_owner_review": true,
+        "require_last_push_approval": false,
+        "require_conversation_resolution": true
+      }
     },
-    "pull_request": {
-      "enabled": true
+    {
+      "type": "pull_request",
+      "parameters": {
+        "enabled": true
+      }
     },
-    "required_linear_history": {
-      "enabled": true
+    {
+      "type": "required_linear_history",
+      "parameters": {
+        "enabled": true
+      }
     },
-    "required_deployments": {
-      "enabled": false,
-      "required_deployment_environments": []
+    {
+      "type": "required_deployments",
+      "parameters": {
+        "enabled": false,
+        "required_deployment_environments": []
+      }
     },
-    "required_signatures": {
-      "enabled": true
+    {
+      "type": "required_signatures",
+      "parameters": {
+        "enabled": true
+      }
     },
-    "merge_queue": {
-      "enabled": true
+    {
+      "type": "merge_queue",
+      "parameters": {
+        "enabled": true
+      }
     },
-    "restrict_creations": {
-      "enabled": true
+    {
+      "type": "restrict_creations",
+      "parameters": {
+        "enabled": true
+      }
     },
-    "restrict_updates": {
-      "enabled": true
+    {
+      "type": "restrict_updates",
+      "parameters": {
+        "enabled": true
+      }
     },
-    "restrict_deletions": {
-      "enabled": true
+    {
+      "type": "restrict_deletions",
+      "parameters": {
+        "enabled": true
+      }
     },
-    "required_status_checks": {
-      "enabled": false,
-      "strict": false,
-      "contexts": []
+    {
+      "type": "required_status_checks",
+      "parameters": {
+        "enabled": false,
+        "strict": false,
+        "contexts": []
+      }
     },
-    "force_push": {
-      "enabled": false
+    {
+      "type": "force_push",
+      "parameters": {
+        "enabled": false
+      }
     },
-    "allowed_merge_strategies": {
-      "merge": true,
-      "squash": true,
-      "rebase": true
+    {
+      "type": "allowed_merge_strategies",
+      "parameters": {
+        "merge": true,
+        "squash": true,
+        "rebase": true
+      }
     }
-  },
+  ],
   "target": "branch"
 }
 EOF
 )
 
-  # Send the ruleset payload to GitHub API
   RESPONSE=$(gh api repos/$TARGET_REPO/rulesets \
     --method POST \
     --header "Accept: application/vnd.github+json" \
@@ -97,6 +132,3 @@ EOF
 create_ruleset "dev" "dev" 1
 create_ruleset "qa" "qa" 2
 create_ruleset "prod" "prod" 2
-
-#chmod +x create_rulesets.sh
-#./create_rulesets.sh new-repository-name
