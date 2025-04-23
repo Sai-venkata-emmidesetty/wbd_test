@@ -22,8 +22,7 @@ create_ruleset() {
   "bypass_actors": [],
   "conditions": {
     "ref_name": {
-      "include": ["$TARGET_BRANCH"],
-      "exclude": []
+      "include": ["$TARGET_BRANCH"]
     }
   },
   "rules": [
@@ -38,60 +37,15 @@ create_ruleset() {
       }
     },
     {
-      "type": "pull_request",
-      "parameters": {
-        "enabled": true
-      }
-    },
-    {
       "type": "required_linear_history",
       "parameters": {
         "enabled": true
       }
     },
     {
-      "type": "required_deployments",
-      "parameters": {
-        "enabled": false,
-        "required_deployment_environments": []
-      }
-    },
-    {
       "type": "required_signatures",
       "parameters": {
         "enabled": true
-      }
-    },
-    {
-      "type": "merge_queue",
-      "parameters": {
-        "enabled": true
-      }
-    },
-    {
-      "type": "restrict_creations",
-      "parameters": {
-        "enabled": true
-      }
-    },
-    {
-      "type": "restrict_updates",
-      "parameters": {
-        "enabled": true
-      }
-    },
-    {
-      "type": "restrict_deletions",
-      "parameters": {
-        "enabled": true
-      }
-    },
-    {
-      "type": "required_status_checks",
-      "parameters": {
-        "enabled": false,
-        "strict": false,
-        "contexts": []
       }
     },
     {
@@ -128,7 +82,7 @@ EOF
   fi
 }
 
-# Create rulesets for dev, qa, and prod branches
+# Apply to branches
 create_ruleset "dev" "dev" 1
 create_ruleset "qa" "qa" 2
 create_ruleset "prod" "prod" 2
