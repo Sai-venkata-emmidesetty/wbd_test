@@ -18,6 +18,7 @@ create_ruleset() {
   RULESET_PAYLOAD=$(cat << EOF
 {
   "name": "$RULESET_NAME",
+  "target": "branch",
   "enforcement": "active",
   "bypass_actors": [],
   "conditions": {
@@ -31,19 +32,12 @@ create_ruleset() {
       "parameters": {
         "required_approving_review_count": $APPROVERS,
         "dismiss_stale_reviews_on_push": true,
-        "require_code_owner_review": false,
+        "require_code_owner_review": true,
         "require_last_push_approval": false,
         "require_conversation_resolution": true
       }
-    },
-    {
-      "type": "required_linear_history",
-      "parameters": {
-        "enabled": true
-      }
     }
-  ],
-  "target": "branch"
+  ]
 }
 EOF
 )
@@ -64,5 +58,3 @@ EOF
 
 # Apply to branches
 create_ruleset "dev" "dev" 1
-create_ruleset "qa" "qa" 2
-create_ruleset "prod" "prod" 2
