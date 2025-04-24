@@ -24,11 +24,15 @@ echo "Repository '$REPO_NAME' created in organization '$ORG'"
 git clone "https://github.com/$ORG/$REPO_NAME.git"
 cd "$REPO_NAME" || exit
 
-# Rename main to prod
-git checkout -b prod
+# Create an initial commit (GitHub does not allow operations on an empty repo)
+echo "# $REPO_NAME" > README.md
+git add README.md
+git commit -m "Initial commit"
+git branch -M prod
 git push -u origin prod
+
+# Set prod as the default branch
 gh api --method PATCH "repos/$ORG/$REPO_NAME" -f default_branch='prod'
-git push origin --delete main
 
 # Create dev and qa branches from prod
 git checkout -b dev
@@ -41,4 +45,3 @@ git push -u origin qa
 # Echo all remote branch names
 echo "Current branches in the repository:"
 git ls-remote --heads "https://github.com/$ORG/$REPO_NAME.git" | awk '{print $2}' | sed 's|refs/heads/||'
-
