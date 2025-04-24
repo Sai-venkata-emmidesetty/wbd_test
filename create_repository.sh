@@ -1,17 +1,44 @@
 #!/bin/bash
-#variables
+
+# Variables
 ORG="sai-venkata-emmidesetty"
 REPO_NAME="$1"
 DESCRIPTION="$2"
-#check arguments
+
+# Check arguments
 if [ -z "$REPO_NAME" ] || [ -z "$DESCRIPTION" ]; then
   echo "Usage: $0 <repo_name> <description>"
   exit 1
 fi
-#create repository
+
+# Create repository
 gh repo create "$ORG/$REPO_NAME" \
   --private \
   --description="$DESCRIPTION" \
   --enable-issues \
   --enable-wiki
+
 echo "Repository '$REPO_NAME' created in organization '$ORG'"
+
+# Clone the repo locally
+git clone "https://github.com/$ORG/$REPO_NAME.git"
+cd "$REPO_NAME" || exit
+
+# Rename main to prod
+git checkout -b prod
+git push -u origin prod
+gh api --method PATCH "repos/$ORG/$REPO_NAME" -f default_branch='prod'
+git push origin --delete main
+
+# Create dev and qa branches from prod
+git checkout -b dev
+git push -u origin dev
+
+git checkout prod
+git checkout -b qa
+git push -u origin qa
+
+# Echo all remote branch names
+echo "Current branches in the repository:"
+git ls-remote --heads "https://github.com/$ORG/$REPO_NAME.git" | awk '{print $2}' | sed 's|refs/heads/||'
+
