@@ -11,6 +11,12 @@ if [ -z "$REPO_NAME" ] || [ -z "$DESCRIPTION" ]; then
   exit 1
 fi
 
+# Check if repository already exists
+if gh repo view "$ORG/$REPO_NAME" &> /dev/null; then
+  echo "Error: Repository '$REPO_NAME' already exists in organization '$ORG'."
+  exit 1
+fi
+
 # Create repository
 gh repo create "$ORG/$REPO_NAME" \
   --private \
